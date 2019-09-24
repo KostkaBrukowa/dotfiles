@@ -1,0 +1,52 @@
+set surround set commentary set multiple-cursors
+set autoindent    " always set autoindenting on
+set copyindent    " copy the previous indentation on autoindenting
+set ignorecase    " ignore case when searching
+set smartcase     " ignore case if search pattern is all lowercase,
+set incsearch     " show search matches as you type
+set number
+set relativenumber
+set ideajoin
+set clipboard
+
+" faster movement to end and beggining of the line
+nnoremap L $
+nnoremap H ^
+vnoremap L $
+vnoremap H ^
+
+" <A-j> join line below, chanched coz of other remap
+nnoremap ∆ J
+
+nnoremap J 9j
+nnoremap K 9k
+
+nnoremap Y y$
+
+nnoremap :w :wall<CR>
+
+" make paste not override the register
+vnoremap p "_dP
+
+" faster horizontal motion to the right
+nnoremap w :action VimMotionCamelRight<CR>
+
+" make enter below and go back to original positoin
+nnoremap <Enter> mbo<ESC>`b
+nnoremap <S-Enter> mbO<ESC>`b
+
+" change current word and allow to use . for changing next words
+nnoremap c* *Ncgn
+
+" git commands
+nnoremap :gb :action Git.Branches<CR>
+nnoremap :gpl :action Git.Pull<CR>
+
+" reformat code
+nnoremap <Space> :action ReformatCode<CR>:action Javascript.Linters.EsLint.Fix<CR>
+
+" reformat visual selection with prettier and fix eslint problems
+vnoremap <Space> :action ReformatWithPrettierAction<CR>
+
+" scroll from source in directory tree
+nnoremap = :action ScrollFromSource<CR>
