@@ -1,9 +1,12 @@
-set surround set commentary set multiple-cursors
+set surround
+set commentary
+set multiple-cursors
 set autoindent    " always set autoindenting on
 set copyindent    " copy the previous indentation on autoindenting
 set ignorecase    " ignore case when searching
 set smartcase     " ignore case if search pattern is all lowercase,
 set incsearch     " show search matches as you type
+set hlsearch      " show search matches as you type
 set number
 set relativenumber
 set ideajoin
@@ -15,25 +18,30 @@ nnoremap H ^
 vnoremap L $
 vnoremap H ^
 
-" <A-j> join line below, chanched coz of other remap
-nnoremap ∆ J
+" <A-j> join line below, weird coz of other remap
+" nnoremap <C-j> J "for windows
+
+nnoremap <C-j> J
 
 nnoremap J 9j
 nnoremap K 9k
+vnoremap J 9j
+vnoremap K 9k
 
 nnoremap Y y$
 
+" save all files and hit enter for one keystroke less
 nnoremap :w :wall<CR>
 
 " make paste not override the register
 vnoremap p "_dP
 
-" faster horizontal motion to the right
-nnoremap w :action VimMotionCamelRight<CR>
+" faster horizontal motion to the right - optional
+"" nnoremap w :action EditorNextWordInDifferentHumpsMode<CR>
 
 " make enter below and go back to original positoin
-nnoremap <Enter> mbo<ESC>`b
-nnoremap <S-Enter> mbO<ESC>`b
+nnoremap <Enter> mbo<ESC>0D`b
+nnoremap <S-Enter> mbO<ESC>0D`b
 
 " change current word and allow to use . for changing next words
 nnoremap c* *Ncgn
@@ -42,11 +50,25 @@ nnoremap c* *Ncgn
 nnoremap :gb :action Git.Branches<CR>
 nnoremap :gpl :action Git.Pull<CR>
 
+"  for non javascipt projects
+"" nnoremap <Space> :action ReformatCode<CR>
 " reformat code
 nnoremap <Space> :action ReformatCode<CR>:action Javascript.Linters.EsLint.Fix<CR>
 
-" reformat visual selection with prettier and fix eslint problems
+" reformat visual selection with prettier and fix eslint problems - optional
 vnoremap <Space> :action ReformatWithPrettierAction<CR>
 
 " scroll from source in directory tree
 nnoremap = :action ScrollFromSource<CR>
+
+" go to declaration of react component when you are inside one
+nnoremap <C-d> G%0wwgd
+
+" move line above or downwords
+vnoremap ∆ :action MoveLineDown<CR>
+vnoremap Ż :action MoveLineUp<CR>
+
+nnoremap <C-l> <C-w>l
+nnoremap <C-h> <C-w>h
+
+nnoremap 8 *
