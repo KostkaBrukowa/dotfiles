@@ -1,6 +1,10 @@
 set surround
 set commentary
 set multiple-cursors
+set ReplaceWithRegister
+set ideajoin
+set ideamarks
+
 set autoindent    " always set autoindenting on
 set copyindent    " copy the previous indentation on autoindenting
 set ignorecase    " ignore case when searching
@@ -9,7 +13,6 @@ set incsearch     " show search matches as you type
 set hlsearch      " show search matches as you type
 set number
 set relativenumber
-set ideajoin
 set clipboard
 
 " faster movement to end and beggining of the line
@@ -71,4 +74,17 @@ vnoremap Ż :action MoveLineUp<CR>
 nnoremap <C-l> <C-w>l
 nnoremap <C-h> <C-w>h
 
-nnoremap 8 *
+nnoremap gh :action ShowErrorDescription<CR>
+
+nnoremap mm mM
+nnoremap `m `M
+nnoremap 'm 'M
+nnoremap mj mJ
+nnoremap `j `J
+nnoremap 'j 'J
+nnoremap mk mK
+nnoremap `k `K
+nnoremap 'k 'K
+nnoremap mn mN
+nnoremap `n `N
+nnoremap 'n 'N
