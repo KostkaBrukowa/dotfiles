@@ -1,8 +1,11 @@
 syntax on
 language en_US
 
+filetype plugin on
+
+set wrap
 set spelllang=en_us,pl
-set nospell
+set spell
 set hidden
 set noerrorbells
 set tabstop=4 softtabstop=4
@@ -11,7 +14,6 @@ set expandtab
 set smartindent
 set nu
 set relativenumber
-set nowrap
 set smartcase
 set noswapfile
 set nobackup
@@ -19,6 +21,7 @@ set undodir=~/.vim/undodir
 set undofile
 set incsearch
 set hlsearch
+
 "
 " Give more space for displaying messages.
 set cmdheight=2
@@ -34,6 +37,7 @@ set colorcolumn=120
 highlight ColorColumn ctermbg=0 guibg=lightgrey
 
 call plug#begin('~/.vim/plugged')
+Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 
 " Style
 Plug 'gruvbox-community/gruvbox'
@@ -44,12 +48,8 @@ Plug 'phanviet/vim-monokai-pro'
 Plug 'flazz/vim-colorschemes'
 Plug 'chriskempson/base16-vim'
 
-" tsserver and complitions
-Plug 'neovim/nvim-lspconfig'
-Plug 'nvim-lua/completion-nvim'
-Plug 'tjdevries/nlua.nvim'
-Plug 'tjdevries/lsp_extensions.nvim'
-Plug 'nvim-lua/diagnostic-nvim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'Valloric/YouCompleteMe'
 
 " regular plugins
 " git management
@@ -76,8 +76,8 @@ Plug 'itchyny/lightline.vim'
 Plug 'itchyny/vim-gitbranch'
 " zen-mode plugin
 Plug 'junegunn/goyo.vim' 
-" spelling plugin
-Plug 'kamykn/spelunker.vim'
+Plug 'SirVer/ultisnips'
+
 
 " fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -89,6 +89,8 @@ Plug 'stsewd/fzf-checkout.vim'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-lua/telescope.nvim'
+
+Plug 'lervag/vimtex'
 
 call plug#end()
 
@@ -119,22 +121,11 @@ let g:telescope_cache_results = 1
 let g:telescope_prime_fuzzy_find  = 1
 
 " LSP
-nnoremap <leader>vd :lua vim.lsp.buf.definition()<CR>
-nnoremap <leader>vi :lua vim.lsp.buf.implementation()<CR>
-nnoremap <leader>vsh :lua vim.lsp.buf.signature_help()<CR>
-nnoremap <leader>vrr :lua vim.lsp.buf.references()<CR>
-nnoremap <leader>vrn :lua vim.lsp.buf.rename()<CR>
-nnoremap <leader>vh :lua vim.lsp.buf.hover()<CR>
-nnoremap <leader>vca :lua vim.lsp.buf.code_action()<CR>
-
 imap <c-space> <Plug>(completion_trigger)
-set completeopt=menuone,noinsert
-let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
-lua require'nvim_lsp'.tsserver.setup{ on_attach=require'completion'.on_attach, require'diagnostic'.on_attach }
 
 " Some other maps
 " √ł is <Option-p>
-nnoremap √ł :GFiles<CR>zz
+nnoremap √ł :GFiles<CR>
 nnoremap :gb :GBranches<CR>
 nnoremap :gfa :Git fetch --all<CR>
 nnoremap <leader>pw :lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>
@@ -149,8 +140,8 @@ noremap Ňā <C-o>
 noremap √ļ <C-i>
 
 " colemak hjkl mappings
-noremap n j
-noremap e k
+noremap n gj
+noremap e gk
 noremap j e
 noremap J E
 noremap k n
@@ -211,14 +202,15 @@ let g:ale_fix_on_save = 1
 let g:ale_linters = {
 \   'javascript': ['eslint'],
 \   'typescript': ['eslint'],
+\   'latex': ['lacheck'],
 \}
 " let g:ale_fixers = {
 " \   'javascript': ['eslint'],
 " \   'typescript': ['eslint'],
 " \}
 let g:ale_fixers = {}
-let g:ale_fixers.javascript = ['eslint', 'tsserver']
-let g:ale_fixers.typescript = ['eslint', 'tsserver']
+let g:ale_fixers.javascript = ['eslint']
+let g:ale_fixers.typescript = ['eslint']
 
 " NERDtree
 let NERDTreeQuitOnOpen = 0
@@ -256,3 +248,41 @@ let g:enable_spelunker_vim = 1
 let g:spelunker_check_type = 2
 
 nnoremap <C-n> :NextDiagnosticCycle<CR>
+
+let g:tex_flavor = 'latex'
+nnoremap <space>b :VimtexCompile<CR>
+nnoremap <space>i :VimtexTocToggle<CR>
+nnoremap <space>p :VimtexView<CR> 
+nnoremap <space>c :VimtexCountWords<CR> 
+
+let g:latex_view_general_viewer = 'skim'
+let g:vimtex_view_method = 'skim'
+let g:vimtex_quickfix_mode=0
+
+let g:UltiSnipsSnippetsDir="/Users/jaroslaw.glegola/snips"
+let g:UltiSnipsSnippetDirectories = ['snips']
+
+
+let g:coc_global_extensions = [
+  \ 'coc-snippets',
+  \ 'coc-vimtex',
+  \ 'coc-explorer',
+  \ 'coc-vimlsp',
+  \ ]
+
+inoremap <silent><expr> <c-space> coc#refresh()
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+let g:coc_snippet_next = '<tab>'
+
+
